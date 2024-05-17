@@ -1,14 +1,7 @@
 use serde::{Deserialize, Serialize};
 use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpStream};
 
-use crate::in_memory_db::{get::{get, GetRequest}, set::{set, SetRequest}, KeyValueStore};
-
-
-#[derive(Serialize, Deserialize, Debug)]
-enum Request {
-    Set(SetRequest),
-    Get(GetRequest),
-}
+use crate::in_memory_db::{get::{get, GetRequest}, set::{set, SetRequest}, KeyValueStore, Request};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Response {

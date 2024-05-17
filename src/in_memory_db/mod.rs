@@ -11,4 +11,10 @@ use self::set::SetRequest;
 pub mod set;
 pub mod get;
 
+#[derive(Serialize, Deserialize, Debug)]
+pub enum Request {
+    Set(SetRequest),
+    Get(GetRequest),
+}
+
 pub type KeyValueStore = Arc<Mutex<HashMap<String, (String, Option<Instant>)>>>;

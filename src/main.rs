@@ -3,6 +3,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use iron_vault::connection::handle_connection;
+use iron_vault::start_server;
 use serde::{Deserialize, Serialize};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
@@ -35,19 +36,11 @@ struct Response {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Initialize the key-value store
     let store: KeyValueStore = Arc::new(Mutex::new(HashMap::new()));
 
-    let listener = TcpListener::bind("127.0.0.1:4000").await?;
-    println!("Server listening on port 4000");
+    // Start the IronVault TCP server
+    start_server(store).await?;
 
-    loop {
-        let (socket, _) = listener.accept().await?;
-        let store = Arc::clone(&store);
-
-        tokio::spawn(async move {
-            if let Err(e) = handle_connection(socket, store).await {
-                println!("Failed to handle connection: {:?}", e);
-            }
-        });
-    }
+    Ok(())
 }
