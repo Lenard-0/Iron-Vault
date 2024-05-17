@@ -14,7 +14,7 @@ mod tests {
         });
 
         // Give the server a moment to start
-        tokio::time::sleep(Duration::from_secs(1)).await;
+        tokio::time::sleep(Duration::from_millis(1000)).await;
 
         let mut client = TcpStream::connect("127.0.0.1:4000").await.unwrap();
 
@@ -54,7 +54,7 @@ mod tests {
         });
 
         // Give the server a moment to start
-        tokio::time::sleep(Duration::from_secs(1)).await;
+        tokio::time::sleep(Duration::from_millis(1000)).await;
 
         let mut client = TcpStream::connect("127.0.0.1:4000").await.unwrap();
 
@@ -86,7 +86,7 @@ mod tests {
         assert_eq!(response.value, Some("value2".to_string()));
 
         // Wait for the TTL to expire
-        tokio::time::sleep(Duration::from_secs(3)).await;
+        tokio::time::sleep(Duration::from_millis(3000)).await;
 
         // Test getting the key-value pair after TTL expires
         let get_request = Request::Get(GetRequest {
