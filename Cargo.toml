@@ -3,6 +3,12 @@ name = "iron-vault"
 version = "0.1.0"
 authors = ["Lachy Hislop <lachie.hislop@gmail.com>"]
 edition = "2021"
+description = "A redis style in-memory unified storage written in Rust."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Lenard-0/Iron-Vault"
+readme = "README.md"
+homepage = "https://github.com/Lenard-0/Iron-Vaultt"
+documentation = "https://docs.rs/iron-vault"
 
 # Specify the library
 [lib]
