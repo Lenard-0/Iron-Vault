@@ -1,7 +1,18 @@
 [package]
 name = "iron-vault"
 version = "0.1.0"
+authors = ["Lachy Hislop <lachie.hislop@gmail.com>"]
 edition = "2021"
+
+# Specify the library
+[lib]
+name = "iron_vault"
+path = "src/lib.rs"
+
+# Specify the binary
+[[bin]]
+name = "iron-vault"
+path = "src/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
