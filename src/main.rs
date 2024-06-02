@@ -10,10 +10,10 @@ use tokio::net::{TcpListener, TcpStream};
 
 type KeyValueStore = Arc<Mutex<HashMap<String, (String, Option<Instant>)>>>;
 
-#[derive(Serialize, Deserialize, Debug)]
-struct SetRequest {
+#[derive(Serialize, Debug)]
+struct SetRequest<T> {
     key: String,
-    value: String,
+    value: T,
     ttl: Option<u64>,
 }
 
@@ -22,9 +22,9 @@ struct GetRequest {
     key: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-enum Request {
-    Set(SetRequest),
+#[derive(Serialize, Debug)]
+enum Request<T> {
+    Set(SetRequest<T>),
     Get(GetRequest),
 }
 

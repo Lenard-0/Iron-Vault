@@ -1,9 +1,6 @@
-use std::{sync::Arc, thread::sleep, time::{Duration, Instant}};
-
+use std::{fmt::Debug, str::FromStr, sync::Arc, time::{Duration, Instant}};
 use serde::{Deserialize, Serialize};
-
 use super::KeyValueStore;
-
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SetRequest {
@@ -12,10 +9,15 @@ pub struct SetRequest {
     pub ttl: Option<u64>,
 }
 
-pub async fn set(store: KeyValueStore, key: String, value: String, ttl: Option<u64>) {
+pub async fn set<T>(store: KeyValueStore<T>, key: String, value: String, ttl: Option<u64>)
+where
+    T: Send + Sync + Clone + FromStr + Debug + 'static,
+    T::Err: std::fmt::Debug, // Ensure the error type of FromStr implements Debug
+{
+    let parsed_value = value.parse::<T>().expect("Failed to parse value");
     let expire_at = ttl.map(|t| Instant::now() + Duration::from_millis(t));
     let mut map = store.lock().unwrap();
-    map.insert(key.clone(), (value, expire_at));
+    map.insert(key.clone(), (parsed_value, expire_at));
 
     // If a TTL is provided, spawn a task to remove the key after the TTL expires
     if let Some(ttl) = ttl {
@@ -27,7 +29,10 @@ pub async fn set(store: KeyValueStore, key: String, value: String, ttl: Option<u
     }
 }
 
-async fn remove_key(store: KeyValueStore, key: String) {
+async fn remove_key<T>(store: KeyValueStore<T>, key: String)
+where
+    T: Send + Sync + 'static, // Ensure T is Send and Sync
+{
     let mut map = store.lock().unwrap();
     map.remove(&key);
 }

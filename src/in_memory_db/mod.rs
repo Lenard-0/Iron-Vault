@@ -17,4 +17,4 @@ pub enum Request {
     Get(GetRequest),
 }
 
-pub type KeyValueStore = Arc<Mutex<HashMap<String, (String, Option<Instant>)>>>;
+pub type KeyValueStore<T> = Arc<Mutex<HashMap<String, (T, Option<Instant>)>>>;

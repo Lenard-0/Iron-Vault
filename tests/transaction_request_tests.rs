@@ -8,7 +8,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_set_and_get() {
-        let store: KeyValueStore = Arc::new(Mutex::new(HashMap::new()));
+        let store: KeyValueStore<String> = Arc::new(Mutex::new(HashMap::new()));
 
         // Test setting and getting a value without TTL
         set(Arc::clone(&store), "key1".to_string(), "value1".to_string(), None).await;
@@ -28,7 +28,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_expiration() {
-        let store: KeyValueStore = Arc::new(Mutex::new(HashMap::new()));
+        let store: KeyValueStore<String> = Arc::new(Mutex::new(HashMap::new()));
 
         // Set a key with a TTL of 1 second
         set(Arc::clone(&store), "key3".to_string(), "value3".to_string(), Some(1)).await;
@@ -47,7 +47,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_no_expiration() {
-        let store: KeyValueStore = Arc::new(Mutex::new(HashMap::new()));
+        let store: KeyValueStore<String> = Arc::new(Mutex::new(HashMap::new()));
 
         // Set a key without a TTL
         set(Arc::clone(&store), "key4".to_string(), "value4".to_string(), None).await;
@@ -66,7 +66,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_auto_removal_after_ttl() {
-        let store: KeyValueStore = Arc::new(Mutex::new(HashMap::new()));
+        let store: KeyValueStore<String> = Arc::new(Mutex::new(HashMap::new()));
         tokio::spawn(async move {
             start_server(store).await.unwrap();
         });

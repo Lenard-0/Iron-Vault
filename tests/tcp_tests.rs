@@ -8,7 +8,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_tcp_set_and_get() {
-        let store: KeyValueStore = Arc::new(Mutex::new(HashMap::new()));
+        let store: KeyValueStore<String> = Arc::new(Mutex::new(HashMap::new()));
         tokio::spawn(async move {
             start_server(store).await.unwrap();
         });
@@ -48,7 +48,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_tcp_set_with_ttl() {
-        let store: KeyValueStore = Arc::new(Mutex::new(HashMap::new()));
+        let store: KeyValueStore<String> = Arc::new(Mutex::new(HashMap::new()));
         tokio::spawn(async move {
             start_server(store).await.unwrap();
         });

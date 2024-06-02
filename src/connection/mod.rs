@@ -1,7 +1,15 @@
-use serde::{Deserialize, Serialize};
-use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpStream};
+use std::{fmt::{Debug, Display}, str::FromStr};
 
-use crate::in_memory_db::{get::{get, GetRequest}, set::{set, SetRequest}, KeyValueStore, Request};
+use serde::{Deserialize, Serialize};
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::TcpStream,
+};
+use crate::in_memory_db::{
+    get::{get, GetRequest},
+    set::{set, SetRequest},
+    KeyValueStore, Request,
+};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Response {
@@ -9,7 +17,11 @@ pub struct Response {
     pub value: Option<String>,
 }
 
-pub async fn handle_connection(mut socket: TcpStream, store: KeyValueStore) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_connection<T>(mut socket: TcpStream, store: KeyValueStore<T>) -> Result<(), Box<dyn std::error::Error>>
+where
+    T: Send + Sync + Clone + FromStr + Debug + Display + 'static,
+    T::Err: std::fmt::Debug,
+{
     let mut buffer = [0; 1024];
 
     loop {
@@ -32,7 +44,7 @@ pub async fn handle_connection(mut socket: TcpStream, store: KeyValueStore) -> R
                 socket.write_all(&response_data).await?;
             }
             Request::Get(req) => {
-                let value = get(store.clone(), req.key).await;
+                let value = get(store.clone(), req.key).await.map(|v| v.to_string());
                 let response = Response {
                     status: "ok".to_string(),
                     value,
